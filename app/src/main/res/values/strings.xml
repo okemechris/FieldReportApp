@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name">FieldReportApp</string>
+    <string name="base_url">http://survey.topjoymultiglobal.com/</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (required)</string>
+    <string name="action_sign_in">Sign in </string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+
+
+    private Date fencingCivilCompleted;
+    private Date pylonCivilCompleted;
+    private Date equipPickupSuplierFencingPylon;
+    private Date personelDptFencing;
+    private Date personelArvFencing;
+    private Date startDateFencing;
+    private Date equipOnSiteFencing;
+    private Date installPylonComplete;
+    private Date installFencingComplete;
+    private Date civilVsatComplete;
+    private Date civilSolarComplete;
+    private Date equipPickupWarehouseSolar;
+    private Date personnelDepSolar;
+    private Date personnelArvSolar;
+    private Date startDateSolar;
+    private Date equipOnSiteSolar;
+    private Date installSolarCompleted;
+    private Date installVsatComplete;
+    private Date installBtsComplete;
+    private Date installWifiComplete;
+    private Date personnelDepCommisioning;
+    private Date personnelArvCommisioning;
+    private Date startDateCommisioning;
+    private Date commisioningSolar;
+    private Date CommisioningVsat;
+    private Date commisioningBts;
+    private Date commisioningWifi;
+    private Date personnelDepAcceptance;
+    private Date personnelArvAcceptance;
+    private Date startDateAcceptance;
+    private Date acceptanceFencing;
+    private Date acceptancePylon;
+    private Date acceptanceSolar;
+
+    private Date acceptanceVsat;
+    private Date acceptance3G;
+    private Date acceptanceWifi;
+
+
+    <string name="geo">Geo</string>
+    <string name="startDate">Start Date</string>
+    <string name="surveyCompleted">Survey Completed</string>
+    <string name="equipPickupSuplierCivilWorks">Equipment pickup from Supplier: Civil works Materials-Cement/Gravel/Sand/Fencing and Pylon Foundation Anchor (V)
+</string>
+    <string name="personelDptCivilWorks">Personnel Departure: Civil works Fencing and Pylon (V+AFT)
+</string>
+    <string name="personelArvCivilWorks">Personnel Arrival: Civil works Fencing and Pylon (V+AFT)</string>
+    <string name="startDateCivilWorks">Start Date: Excavation/Civil works Fencing and Pylon (V+AFT)</string>
+    <string name="equipOnSiteCivilWorks">Equipment on Site: Civil works Fencing and Pylon (V)</string>
+    <string name="allExcavationCompleted">All Excavation Completed (V)</string>
+    <string name="fencingCivilCompleted">Fencing Civil works Completed (V)</string>
+    <string name="pylonCivilCompleted">Pylon Civil Works Completed (V)</string>
+    <string name="equipPickupSuplierFencingPylon"> Equipment pickup from Supplier: Fencing and Pylon 30m/35m/55m and Civil works Materials for VSAT and Solar</string>
+    <string name="personelDptFencing">Personnel Departure: Installation-Fencing and Pylon 30m/35m/55m and Civil works Materials for VSAT and Solar</string>
+    <string name="personelArvFencing">Personnel Arrival: Installation-Fencing and Pylon 30m/35m/55m and Civil works Materials for VSAT and Solar (V+AFT)</string>
+    <string name="startDateFencing">Start Date: Installation-Fencing and Pylon 30m/35m/55m and Civil works Materials for VSAT and Solar (V+AFT)</string>
+    <string name="equipOnSiteFencing">Equipment on Site: Fencing and Pylon 30m/35m/55m and Civil works Materials for VSAT and Solar (V)</string>
+    <string name="installPylonComplete">Installation Pylon Completed (V)</string>
+    <string name="installFencingComplete">Installation Fencing Completed (V)</string>
+    <string name="civilVsatComplete">Civil Works VSAT Completed (V)</string>
+    <string name="civilSolarComplete">Civil Works Solar or Battery Completed (V)</string>
+    <string name="equipPickupWarehouseSolar">Equipment pickup from WareHouse: Solar Materials/Vsat Materials/BTS Materials/Wi-Fi Materials</string>
+    <string name="personnelDepSolar">Personnel Departure: Installation-Solar Materials/Vsat Materials/BTS Materials/Wi-Fi Materials</string>
+    <string name="personnelArvSolar">Personnel Arrival: Installation-Solar Materials/Vsat Materials/BTS Materials/Wi-Fi Materials</string>
+    <string name="startDateSolar">Start Date: Installation-Fencing and Pylon 30m/35m/55m and Civil works Materials for VSAT and Solar (V+AFT)</string>
+    <string name="equipOnSiteSolar">Equipment on Site: Solar Materials/Vsat Materials/BTS Materials/Wi-Fi Materials</string>
+    <string name="installSolarCompleted">Installation Solar or Battary for Hub only Completed (V)</string>
+    <string name="installVsatComplete">Installation Vsat Completed (A)</string>
+    <string name="installBtsComplete">Installation BTS Completed(A)</string>
+    <string name="installWifiComplete">Installation WiFi Completed (A)</string>
+    <string name="personnelDepCommisioning">Personnel Departure: Commissioning (V+AFT)</string>
+    <string name="personnelArvCommisioning">Personnel Arrival: Commissioning (V+AFT)</string>
+    <string name="startDateCommisioning">Start Date: Commissioning (V+AFT/SES)</string>
+    <string name="commisioningSolar">Commissioning Solar (V)</string>
+    <string name="CommisioningVsat">Commissioning VSAT(A, SES Networks and AFT)</string>
+    <string name="commisioningBts">Commissioning BTS (A, SES Networks and AFT)</string>
+    <string name="commisioningWifi">Commissioning WiFi (A, SES Networks and AFT)</string>
+    <string name="personnelDepAcceptance">Personnel Departure: Acceptance (V AFT and Client)</string>
+    <string name="personnelArvAcceptance">Personnel Arrival: Acceptance (V AFT and Client)</string>
+    <string name="startDateAcceptance">Start Date: Acceptance (V AFT and Client)</string>
+    <string name="acceptanceFencing">Acceptance Fencing (AFT and Client)</string>
+    <string name="acceptancePylon">Acceptance Pylon (AFT and Client)</string>
+    <string name="acceptanceSolar">Acceptance solar  (AFT and Client)</string>
+    <string name="acceptanceVsat">Acceptance VSAT (SES Networks,AFT and Client)</string>
+    <string name="acceptance3G">Acceptance 3G  (SES Networks,AFT and Client)</string>
+    <string name="acceptanceWifi">Acceptance WiFi  (SES Networks,AFT and Client)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
