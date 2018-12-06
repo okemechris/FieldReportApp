@@ -15,7 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.areatechservices.fieldreportapp.Domain.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;

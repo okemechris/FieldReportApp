@@ -20,7 +20,6 @@ import com.areatechservices.fieldreportapp.Fragments.SurveyFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static  final String DATABASE_NAME = "survey_db";
 
     public SurveyDatabase getSurveyDatabase() {
         return surveyDatabase;
@@ -41,10 +40,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        RoomDatabase db = new RoomDatabase(getApplicationContext());
         //create databse
-        surveyDatabase = Room.databaseBuilder(getApplicationContext(),
-                SurveyDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration()
-                .build();
+        surveyDatabase = db.getSurveyDatabase();
 
         manager = getSupportFragmentManager();
 

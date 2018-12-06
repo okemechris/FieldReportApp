@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.areatechservices.fieldreportapp.Models.Survey;
+import com.areatechservices.fieldreportapp.Models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,5 +36,19 @@ public interface DaoAccess {
     @Query("SELECT * FROM Survey ")
     List<Survey> getAllSurvey();
 
+     @Query("SELECT * FROM Survey WHERE updated = :updated")
+    List<Survey> getUpdatedSurvey(int updated);
+
+    @Query("SELECT * FROM User WHERE status = :status")
+    List<User> getUnregisteredUser(int status);
+
+    @Insert
+    void insertUser(User user);
+
+    @Query("SELECT * FROM User WHERE id = :id")
+    User getUser(Long id);
+
+    @Update
+    void updateUser(User user);
 
 }

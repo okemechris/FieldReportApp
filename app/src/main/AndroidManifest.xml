@@ -4,7 +4,7 @@
 
     <!-- adding internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +24,20 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".SigninActivity" />
-        <activity android:name=".RegistrationActivity"></activity>
+        <activity android:name=".RegistrationActivity" />
+
+        <receiver
+            android:name=".Services.ConnectivityChangeReciever"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".Services.HandleSurveyOnNetworkChangeService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

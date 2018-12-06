@@ -9,11 +9,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.areatechservices.fieldreportapp.ApiUrls;
 import com.areatechservices.fieldreportapp.Constant;
 import com.areatechservices.fieldreportapp.MainActivity;
 import com.areatechservices.fieldreportapp.Models.Survey;
 import com.areatechservices.fieldreportapp.R;
+import com.areatechservices.fieldreportapp.VolleySingleton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SurveyFragment extends Fragment implements View.OnClickListener {
@@ -215,9 +229,11 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
                             survey.setAcceptanceVsat(acceptanceVsat.getText().toString());
                             survey.setAcceptance3G(acceptance3G.getText().toString());
                             survey.setAcceptanceWifi(acceptanceWifi.getText().toString());
+                            survey.setUpdated(1);
 
 
                             ((MainActivity)getActivity()).getSurveyDatabase().daoAccess ().insertOnlySingleSurvey (survey);
+
                         }
                     }) .start();
 
@@ -243,6 +259,59 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
 
     }
 
+
+
+//    public void sendSurveyToServer(Survey survey){
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_ADD_NEW_SURVEY,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        System.out.println("error on response");
+//                        try {
+//                            //converting response to json object
+//                            JSONObject obj = new JSONObject(response);
+//
+//                            //if no error in response
+//                            if (!obj.getBoolean("error")) {
+//                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+//
+//
+//                              /*
+//                              /*if no error do something
+//                              */
+//
+//
+//                            } else {
+//                                Toast.makeText(getContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        System.out.println("error on response");
+//                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }) {
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                //params
+//                Map<String, String> params = new HashMap<>();
+////                params.put("email", email);
+////                params.put("password", password);
+//                return params;
+//            }
+//
+//
+//        };
+//
+//        VolleySingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
+//    }
+//
 
 
     @Override

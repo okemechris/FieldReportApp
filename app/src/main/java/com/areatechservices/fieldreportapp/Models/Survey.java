@@ -19,6 +19,16 @@ public class Survey {
     @PrimaryKey
     private Long id;
     private String geo;
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    private int updated;
     private Integer status;
     private String startDate;
     private String surveyCompleted;

@@ -8,4 +8,7 @@ public class Constant {
 
     public static int SURVEYCREATED = 1;
     public static int SURVEYCOMPLETED = 2;
+
+    public static int UPDATED = 1;
+    public static int NOT_UPDATED = 0;
 }

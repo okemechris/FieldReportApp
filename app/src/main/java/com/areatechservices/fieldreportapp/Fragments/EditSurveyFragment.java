@@ -278,7 +278,7 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
                             survey.setAcceptanceVsat(acceptanceVsat.getText().toString());
                             survey.setAcceptance3G(acceptance3G.getText().toString());
                             survey.setAcceptanceWifi(acceptanceWifi.getText().toString());
-
+                            survey.setUpdated(2);
 
                             ((MainActivity)getActivity()).getSurveyDatabase().daoAccess ().updateSurvey (survey);
                         }

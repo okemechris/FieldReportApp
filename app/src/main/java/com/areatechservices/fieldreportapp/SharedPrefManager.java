@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.areatechservices.fieldreportapp.Domain.User;
+import com.areatechservices.fieldreportapp.Models.User;
 
 /**
  * Created by chris on 9/5/2017.
@@ -40,7 +40,7 @@ public class SharedPrefManager {
     public void userLogin(User user) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_ID, user.getId());
+        editor.putLong(KEY_ID, user.getId());
         editor.putString(KEY_NAME, user.getName());
         editor.putString(KEY_EMAIL, user.getEmail());
         editor.apply();
@@ -53,13 +53,10 @@ public class SharedPrefManager {
     }
 
     //this method will give the logged in user
-    public User getUser() {
+    public User getUser(Context context) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return new User(
-                sharedPreferences.getInt(KEY_ID, -1),
-                sharedPreferences.getString(KEY_NAME, null),
-                sharedPreferences.getString(KEY_EMAIL, null)
-        );
+        return new RoomDatabase(context).getSurveyDatabase().daoAccess().getUser(sharedPreferences.getLong(KEY_ID, -1));
+
     }
 
     //this method will logout the user
