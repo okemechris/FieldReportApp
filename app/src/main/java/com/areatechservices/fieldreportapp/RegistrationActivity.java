@@ -84,19 +84,22 @@ public class RegistrationActivity extends AppCompatActivity {
             return;
         }
 
-        User user = new User();
-        user.setEmail(email);
-        user.setName(name);
-        user.setPassword(password);
-        user.setStatus(0);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User user = new User();
+                user.setEmail(email);
+                user.setName(name);
+                user.setPassword(password);
+                user.setStatus(0);
 
-        db.getSurveyDatabase().daoAccess().insertUser(user);
-        SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                db.getSurveyDatabase().daoAccess().insertUser(user);
+                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
-        finish();
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
 //
-
+            }}).start();
         //        dialog.show();
 //        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_REGISTER,
 //                new Response.Listener<String>() {

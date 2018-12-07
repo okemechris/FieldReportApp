@@ -40,13 +40,21 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
         super("HandleSurveyOnNetworkChangeService");
     }
 
-
-
+    public  User loggedinUser;
+    SurveyDatabase db;
     @Override
     protected void onHandleIntent(Intent intent) {
 
         Bundle extras = intent.getExtras();
         boolean isNetworkConnected = extras.getBoolean("isNetworkConnected");
+        db = new RoomDatabase(getApplicationContext()).getSurveyDatabase();
+        final User u = SharedPrefManager.getInstance(getApplicationContext()).getUser(getApplicationContext());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loggedinUser = db.daoAccess().getUserByEmail(u.getEmail());
+            }}).start();
 
         sendUpdatedSurveyToServer(isNetworkConnected,getApplicationContext());
         startUserToServer(isNetworkConnected,getApplicationContext());
@@ -58,7 +66,6 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
     public void sendUpdatedSurveyToServer(boolean connected, final Context context){
 
         if(connected){
-            final SurveyDatabase db = new RoomDatabase(context).getSurveyDatabase();
 
             new Thread(new Runnable() {
                 @Override
@@ -88,7 +95,6 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
     public void sendNewSurveyToServer(boolean connected, final Context context){
 
         if(connected){
-            final SurveyDatabase db = new RoomDatabase(context).getSurveyDatabase();
 
             new Thread(new Runnable() {
                 @Override
@@ -120,7 +126,6 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 
         if(connected){
 
-            final SurveyDatabase db = new RoomDatabase(context).getSurveyDatabase();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -246,7 +251,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 
     public void sendSurveyToServer(final Survey survey){
 
-        final User u = SharedPrefManager.getInstance(getApplicationContext()).getUser(getApplicationContext());
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_UPDATE_SURVEY,
                 new Response.Listener<String>() {
                     @Override
@@ -330,7 +335,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 params.put("a3g", survey.getAcceptance3G());
                 params.put("awifi", survey.getAcceptanceWifi());
                 params.put("location", survey.getGeo());
-                params.put("user_id", u.getId().toString());
+                params.put("user_id", loggedinUser.getId().toString());
 
 
                 return params;

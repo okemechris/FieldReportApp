@@ -48,6 +48,10 @@ public interface DaoAccess {
     @Query("SELECT * FROM User WHERE id = :id")
     User getUser(Long id);
 
+    @Query("SELECT * FROM User WHERE email = :email")
+    User getUserByEmail(String email);
+
+
     @Update
     void updateUser(User user);
 

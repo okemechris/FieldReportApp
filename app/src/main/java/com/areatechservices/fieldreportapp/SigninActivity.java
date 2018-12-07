@@ -15,6 +15,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.areatechservices.fieldreportapp.Domain.UserDomain;
+import com.areatechservices.fieldreportapp.Models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,14 +106,14 @@ public class SigninActivity extends AppCompatActivity {
                                 JSONObject userJson = obj.getJSONObject("user");
 
                                 //creating a new user object
-                                User user = new User(
-                                        userJson.getInt("id"),
+                                UserDomain user = new UserDomain(
+                                        userJson.getLong("id"),
                                         userJson.getString("name"),
                                         userJson.getString("email")
                                 );
 
-                                //storing the user in shared preferences
-                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+//                                //storing the user in shared preferences
+//                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
                                 //starting the profile activity
                                 finish();
