@@ -55,7 +55,7 @@ public class SharedPrefManager {
     //this method will give the logged in user
     public User getUser(Context context) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return new RoomDatabase(context).getSurveyDatabase().daoAccess().getUser(sharedPreferences.getLong(KEY_ID, -1));
+        return new RoomDatabase(context).getSurveyDatabase().daoAccess().getUserByEmail(sharedPreferences.getString(KEY_EMAIL, ""));
 
     }
 

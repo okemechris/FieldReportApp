@@ -1,6 +1,7 @@
 package com.areatechservices.fieldreportapp;
 
 import android.arch.persistence.room.Room;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 
 import com.areatechservices.fieldreportapp.Fragments.HomeLandingFragment;
 import com.areatechservices.fieldreportapp.Fragments.SurveyFragment;
+import com.areatechservices.fieldreportapp.Services.ConnectivityChangeReciever;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,12 +35,17 @@ public class MainActivity extends AppCompatActivity
 
     FragmentManager manager;
     FragmentTransaction transaction;
-
+    ConnectivityChangeReciever connectivityReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        connectivityReceiver = new ConnectivityChangeReciever();
+        registerReceiver(connectivityReceiver,intentFilter);
 
         RoomDatabase db = new RoomDatabase(getApplicationContext());
         //create databse
@@ -130,5 +137,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        try {
+            unregisterReceiver(connectivityReceiver);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+
     }
 }

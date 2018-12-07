@@ -48,22 +48,18 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
         Bundle extras = intent.getExtras();
         boolean isNetworkConnected = extras.getBoolean("isNetworkConnected");
         db = new RoomDatabase(getApplicationContext()).getSurveyDatabase();
-        final User u = SharedPrefManager.getInstance(getApplicationContext()).getUser(getApplicationContext());
+        loggedinUser = SharedPrefManager.getInstance(getApplicationContext()).getUser(getApplicationContext());
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loggedinUser = db.daoAccess().getUserByEmail(u.getEmail());
-            }}).start();
 
-        sendUpdatedSurveyToServer(isNetworkConnected,getApplicationContext());
+
+        sendUpdatedSurveyToServer(isNetworkConnected);
         startUserToServer(isNetworkConnected,getApplicationContext());
         sendNewSurveyToServer(isNetworkConnected,getApplicationContext());
         // your code
     }
 
 
-    public void sendUpdatedSurveyToServer(boolean connected, final Context context){
+    public void sendUpdatedSurveyToServer(boolean connected){
 
         if(connected){
 
@@ -75,8 +71,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                     for(Survey survey : surveyList){
 
                         sendSurveyToServer(survey);
-                        survey.setUpdated(0);
-                        db.daoAccess ().updateSurvey(survey);
+
                     }
 
                 }
@@ -104,8 +99,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                     for(Survey survey : surveyList){
 
                         sendNewSurveyToServerd(survey);
-                        survey.setUpdated(0);
-                        db.daoAccess ().updateSurvey(survey);
+
                     }
 
                 }
@@ -135,8 +129,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 
                         sendUserToServer(user);
 
-                        user.setStatus(1);
-                       db.daoAccess ().updateUser(user);
+
                     }
 
                 }
@@ -159,7 +152,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("error on response");
+                        System.out.println("response successful");
                         try {
                             //converting response to json object
                             JSONObject obj = new JSONObject(response);
@@ -171,7 +164,8 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                               /*
                               /*if no error do something
                               */
-
+                                survey.setUpdated(0);
+                                db.daoAccess ().updateSurvey(survey);
 
                             } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -256,7 +250,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("error on response");
+                        System.out.println("survey response succesful");
                         try {
                             //converting response to json object
                             JSONObject obj = new JSONObject(response);
@@ -268,7 +262,8 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                               /*
                               /*if no error do something
                               */
-
+                                survey.setUpdated(0);
+                                db.daoAccess ().updateSurvey(survey);
 
                               } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -281,7 +276,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("error on response");
+                        System.out.println("survey error on response");
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
@@ -355,7 +350,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("error on response");
+                        System.out.println("user to server successful");
                         try {
                             //converting response to json object
                             JSONObject obj = new JSONObject(response);
@@ -367,7 +362,8 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                               /*
                               /*if no error do something
                               */
-
+                                user.setStatus(1);
+                                db.daoAccess ().updateUser(user);
 
                             } else {
                                 Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -380,7 +376,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("error on response");
+                        System.out.println("user to server error on response");
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {

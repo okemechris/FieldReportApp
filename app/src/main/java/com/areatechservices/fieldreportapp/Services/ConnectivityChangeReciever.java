@@ -25,7 +25,6 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
     public  boolean isConnected(Context context) {
         ConnectivityManager connectivityManager = ((ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE));
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        System.out.println("ddsdss fffff dddd sss");
         return networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected();
     }
 
