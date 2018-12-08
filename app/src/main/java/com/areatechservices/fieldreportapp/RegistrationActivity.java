@@ -8,8 +8,21 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.areatechservices.fieldreportapp.Domain.UserDomain;
 import com.areatechservices.fieldreportapp.Models.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -84,82 +97,78 @@ public class RegistrationActivity extends AppCompatActivity {
             return;
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                User user = new User();
-                user.setEmail(email);
-                user.setName(name);
-                user.setPassword(password);
-                user.setStatus(0);
-
-                db.getSurveyDatabase().daoAccess().insertUser(user);
-                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                finish();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//
-            }}).start();
-        //        dialog.show();
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_REGISTER,
-//                new Response.Listener<String>() {
-//
-//                    @Override
-//                    public void onResponse(String response) {
-//                        //progressBar.setVisibility(View.GONE);
-//                        dialog.dismiss();
-//
-//                        try {
-//                            //converting response to json object
-//                            JSONObject obj = new JSONObject(response);
-//
-//                            //if no error in response
-//                            if (!obj.getBoolean("error")) {
-//                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-//
-//                                //getting the user from the response
-//                                JSONObject userJson = obj.getJSONObject("user");
-//
-//                                //creating a new user object
-//                                User user = new User(
-//                                        userJson.getInt("id"),
-//                                        userJson.getString("name"),
-//                                        userJson.getString("email")
-//                                );
-//
-//                                //storing the user in shared preferences
-//                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-//
-//                                //starting the profile activity
-//                                finish();
-//                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                            } else {
-//                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-//                        dialog.dismiss();
-//                    }
-//                }) {
+//        new Thread(new Runnable() {
 //            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("name", name);
-//                params.put("email", email);
-//                params.put("password", password);
-//                params.put("cpassword", cPassword);
-//                return params;
-//            }
-//        };
+//            public void run() {
+//                User user = new User();
+//                user.setEmail(email);
+//                user.setName(name);
+//                user.setPassword(password);
+//                user.setStatus(0);
 //
-//        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+//                db.getSurveyDatabase().daoAccess().insertUser(user);
+//                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+//
+//                finish();
+//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+////
+//            }}).start();
+                dialog.show();
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_REGISTER,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        //progressBar.setVisibility(View.GONE);
+                        dialog.dismiss();
+
+                        try {
+                            //converting response to json object
+                            JSONObject obj = new JSONObject(response);
+
+                            //if no error in response
+                            if (!obj.has("error")) {
+                                //getting the user from the response
+                                JSONObject userJson = obj.getJSONObject("success");
+
+                                //creating a new user object
+                                UserDomain user = new UserDomain(
+                                        userJson.getString("name")
+                                );
+
+                                //storing the user in shared preferences
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user,userJson.getString("token"));
+
+                                //starting the profile activity
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            } else {
+                                Toast.makeText(getApplicationContext(), "error registration", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("name", name);
+                params.put("email", email);
+                params.put("password", password);
+                params.put("c_password", cPassword);
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
 
     }
 }

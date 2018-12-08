@@ -53,7 +53,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 
 
         sendUpdatedSurveyToServer(isNetworkConnected);
-        startUserToServer(isNetworkConnected,getApplicationContext());
+//        startUserToServer(isNetworkConnected,getApplicationContext());
         sendNewSurveyToServer(isNetworkConnected,getApplicationContext());
         // your code
     }
@@ -116,34 +116,34 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
     }
 
 
-    public void startUserToServer(boolean connected, final Context context){
-
-        if(connected){
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    List<User> userList = db.daoAccess ().getUnregisteredUser (0);
-                    for(User user : userList){
-
-                        sendUserToServer(user);
-
-
-                    }
-
-                }
-
-            }).start();
-
-
-
-
-
-        }
-
-
-    }
+//    public void startUserToServer(boolean connected, final Context context){
+//
+//        if(connected){
+//
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    List<User> userList = db.daoAccess ().getUnregisteredUser (0);
+//                    for(User user : userList){
+//
+//                        sendUserToServer(user);
+//
+//
+//                    }
+//
+//                }
+//
+//            }).start();
+//
+//
+//
+//
+//
+//        }
+//
+//
+//    }
 
 
     public void sendNewSurveyToServerd(final Survey survey){
@@ -158,9 +158,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                             JSONObject obj = new JSONObject(response);
 
                             //if no error in response
-                            if (!obj.getBoolean("error")) {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
+                            if (!obj.has("error")) {
                               /*
                               /*if no error do something
                               */
@@ -168,7 +166,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                                 db.daoAccess ().updateSurvey(survey);
 
                             } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -182,6 +180,16 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
+
+            //This is for Headers If You Needed
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+                return params;
+            }
+
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 //params
@@ -256,9 +264,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                             JSONObject obj = new JSONObject(response);
 
                             //if no error in response
-                            if (!obj.getBoolean("error")) {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
+                            if (!obj.has("error")) {
                               /*
                               /*if no error do something
                               */
@@ -266,7 +272,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                                 db.daoAccess ().updateSurvey(survey);
 
                               } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -280,6 +286,15 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+                return params;
+            }
+
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 //params
@@ -344,60 +359,62 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 
 
 
-    public void sendUserToServer(final User user){
+//    public void sendUserToServer(final User user){
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_REGISTER,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        System.out.println("user to server successful");
+//                        try {
+//                            //converting response to json object
+//                            JSONObject obj = new JSONObject(response);
+//
+//                            //if no error in response
+//                            if (!obj.getBoolean("error")) {
+//                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+//
+//                              /*
+//                              /*if no error do something
+//                              */
+//                                user.setStatus(1);
+//                                db.daoAccess ().updateUser(user);
+//
+//                            } else {
+//                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        System.out.println("user to server error on response");
+//                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }) {
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                //params
+//                Map<String, String> params = new HashMap<>();
+//                params.put("email", user.getEmail());
+//                params.put("password", user.getPassword());
+//                params.put("name", user.getName());
+//                params.put("c_password", user.getPassword());
+//                return params;
+//            }
+//
+//
+//        };
+//
+//        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+//    }
+//
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_REGISTER,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println("user to server successful");
-                        try {
-                            //converting response to json object
-                            JSONObject obj = new JSONObject(response);
 
-                            //if no error in response
-                            if (!obj.getBoolean("error")) {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
-                              /*
-                              /*if no error do something
-                              */
-                                user.setStatus(1);
-                                db.daoAccess ().updateUser(user);
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("user to server error on response");
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //params
-                Map<String, String> params = new HashMap<>();
-                params.put("email", user.getEmail());
-                params.put("password", user.getPassword());
-                params.put("name", user.getName());
-                params.put("c_password", user.getPassword());
-                return params;
-            }
-
-
-        };
-
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-    }
-
-    }
+   }
 
 
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.areatechservices.fieldreportapp.Domain.UserDomain;
 import com.areatechservices.fieldreportapp.Models.User;
 
 /**
@@ -20,6 +21,7 @@ public class SharedPrefManager {
     private static final String KEY_NAME = "keyname";
     private static final String KEY_EMAIL = "keyemail";
     private static final String KEY_ID = "keyid";
+    private static final String USER_TOKEN = "userToken";
 
     private static SharedPrefManager mInstance;
     private static Context mCtx;
@@ -37,12 +39,12 @@ public class SharedPrefManager {
 
     //method to let the user login
     //this method will store the user data in shared preferences
-    public void userLogin(User user) {
+    public void userLogin(UserDomain user,String token) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString(KEY_NAME, user.getName());
-        editor.putString(KEY_EMAIL, user.getEmail());
+        editor.putString(USER_TOKEN, token);
         editor.apply();
     }
 
@@ -58,6 +60,13 @@ public class SharedPrefManager {
         return new RoomDatabase(context).getSurveyDatabase().daoAccess().getUserByEmail(sharedPreferences.getString(KEY_EMAIL, ""));
 
     }
+
+    public String getUserToken(){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(USER_TOKEN, "");
+    }
+
+
 
     //this method will logout the user
     public void logout() {

@@ -99,27 +99,23 @@ public class SigninActivity extends AppCompatActivity {
                             JSONObject obj = new JSONObject(response);
 
                             //if no error in response
-                            if (!obj.getBoolean("error")) {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-
+                            if (!obj.has("error")) {
                                 //getting the user from the response
-                                JSONObject userJson = obj.getJSONObject("user");
+                                JSONObject userJson = obj.getJSONObject("success");
 
                                 //creating a new user object
                                 UserDomain user = new UserDomain(
-                                        userJson.getLong("id"),
-                                        userJson.getString("name"),
-                                        userJson.getString("email")
+                                        userJson.getString("name")
                                 );
 
-//                                //storing the user in shared preferences
-//                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                               //storing the user in shared preferences
+                               SharedPrefManager.getInstance(getApplicationContext()).userLogin(user,userJson.getString("token"));
 
                                 //starting the profile activity
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "error login", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
