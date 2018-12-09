@@ -1,7 +1,10 @@
 package com.areatechservices.fieldreportapp.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -178,65 +181,33 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
                     //do update
                 }else{
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Survey survey =new Survey();
-                            survey.setGeo(geo.getText().toString());
-                            survey.setStatus(Constant.SURVEYCREATED);
-                            survey.setStartDate(startDate.getText().toString());
-                            survey.setSurveyCompleted(surveyCompleted.getText().toString());
-                            survey.setEquipPickupSuplierCivilWorks(equipPickupSuplierCivilWorks.getText().toString());
-                            survey.setPersonelDptCivilWorks(personelDptCivilWorks.getText().toString());
-                            survey.setPersonelArvCivilWorks(personelArvCivilWorks.getText().toString());
-                            survey.setStartDateCivilWorks(startDateCivilWorks.getText().toString());
-                            survey.setEquipOnSiteCivilWorks(equipOnSiteCivilWorks.getText().toString());
-                            survey.setAllExcavationCompleted(allExcavationCompleted.getText().toString());
-                            survey.setFencingCivilCompleted(fencingCivilCompleted.getText().toString());
-                            survey.setPylonCivilCompleted(pylonCivilCompleted.getText().toString());
-                            survey.setEquipPickupSuplierFencingPylon(equipPickupSuplierFencingPylon.getText().toString());
-                            survey.setPersonelDptFencing(personelDptFencing.getText().toString());
-                            survey.setPersonelArvFencing(personelArvFencing.getText().toString());
-                            survey.setStartDateFencing(startDateFencing.getText().toString());
-                            survey.setEquipOnSiteFencing(equipOnSiteFencing.getText().toString());
-                            survey.setInstallPylonComplete(installPylonComplete.getText().toString());
-                            survey.setInstallFencingComplete(installFencingComplete.getText().toString());
-                            survey.setCivilVsatComplete(civilVsatComplete.getText().toString());
-                            survey.setCivilSolarComplete(civilSolarComplete.getText().toString());
-                            survey.setEquipPickupWarehouseSolar(equipPickupWarehouseSolar.getText().toString());
-                            survey.setPersonnelDepSolar(personnelDepSolar.getText().toString());
-                            survey.setPersonnelArvSolar(personnelArvSolar.getText().toString());
-                            survey.setStartDateSolar(startDateSolar.getText().toString());
-                            survey.setEquipOnSiteSolar(equipOnSiteSolar.getText().toString());
-                            survey.setInstallSolarCompleted(installSolarCompleted.getText().toString());
-                            survey.setInstallVsatComplete(installVsatComplete.getText().toString());
-                            survey.setInstallBtsComplete(installBtsComplete.getText().toString());
-                            survey.setInstallWifiComplete(installWifiComplete.getText().toString());
-                            survey.setPersonnelDepCommisioning(personnelDepCommisioning.getText().toString());
-                            survey.setPersonnelArvCommisioning(personnelArvCommisioning.getText().toString());
-                            survey.setStartDateCommisioning(startDateCommisioning.getText().toString());
-                            survey.setCommisioningSolar(commisioningSolar.getText().toString());
-                            survey.setCommisioningVsat(CommisioningVsat.getText().toString());
-                            survey.setCommisioningBts(commisioningBts.getText().toString());
-                            survey.setCommisioningWifi(commisioningWifi.getText().toString());
-                            survey.setPersonnelDepAcceptance(personnelDepAcceptance.getText().toString());
-                            survey.setPersonnelArvAcceptance(personnelArvAcceptance.getText().toString());
-                            survey.setStartDateAcceptance(startDateAcceptance.getText().toString());
-                            survey.setAcceptanceFencing(acceptanceFencing.getText().toString());
-                            survey.setGeo(geo.getText().toString());
-                            survey.setAcceptancePylon(acceptancePylon.getText().toString());
-                            survey.setAcceptanceSolar(acceptanceSolar.getText().toString());
-                            survey.setAcceptanceVsat(acceptanceVsat.getText().toString());
-                            survey.setAcceptance3G(acceptance3G.getText().toString());
-                            survey.setAcceptanceWifi(acceptanceWifi.getText().toString());
-                            survey.setUpdated(1);
+                    AlertDialog.Builder builder;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
+                    } else {
+                        builder = new AlertDialog.Builder(getContext());
+                    }
+                    builder.setTitle("Create New Survey")
+                            .setMessage("Are you sure you want to create this survey?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
 
+                                    doAdd();
+                                    HomeLandingFragment home = new HomeLandingFragment();
+                                    getActivity().getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.fragmentContainer, home,"homefragment")
+                                            .addToBackStack(null)
+                                            .commit();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
 
-                            ((MainActivity)getActivity()).getSurveyDatabase().daoAccess ().insertOnlySingleSurvey (survey);
-
-                        }
-                    }) .start();
-
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
 
 
 
@@ -260,6 +231,71 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    void doAdd(){
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Survey survey =new Survey();
+                survey.setGeo(geo.getText().toString());
+                survey.setStatus(Constant.SURVEYCREATED);
+                survey.setStartDate(startDate.getText().toString());
+                survey.setSurveyCompleted(surveyCompleted.getText().toString());
+                survey.setEquipPickupSuplierCivilWorks(equipPickupSuplierCivilWorks.getText().toString());
+                survey.setPersonelDptCivilWorks(personelDptCivilWorks.getText().toString());
+                survey.setPersonelArvCivilWorks(personelArvCivilWorks.getText().toString());
+                survey.setStartDateCivilWorks(startDateCivilWorks.getText().toString());
+                survey.setEquipOnSiteCivilWorks(equipOnSiteCivilWorks.getText().toString());
+                survey.setAllExcavationCompleted(allExcavationCompleted.getText().toString());
+                survey.setFencingCivilCompleted(fencingCivilCompleted.getText().toString());
+                survey.setPylonCivilCompleted(pylonCivilCompleted.getText().toString());
+                survey.setEquipPickupSuplierFencingPylon(equipPickupSuplierFencingPylon.getText().toString());
+                survey.setPersonelDptFencing(personelDptFencing.getText().toString());
+                survey.setPersonelArvFencing(personelArvFencing.getText().toString());
+                survey.setStartDateFencing(startDateFencing.getText().toString());
+                survey.setEquipOnSiteFencing(equipOnSiteFencing.getText().toString());
+                survey.setInstallPylonComplete(installPylonComplete.getText().toString());
+                survey.setInstallFencingComplete(installFencingComplete.getText().toString());
+                survey.setCivilVsatComplete(civilVsatComplete.getText().toString());
+                survey.setCivilSolarComplete(civilSolarComplete.getText().toString());
+                survey.setEquipPickupWarehouseSolar(equipPickupWarehouseSolar.getText().toString());
+                survey.setPersonnelDepSolar(personnelDepSolar.getText().toString());
+                survey.setPersonnelArvSolar(personnelArvSolar.getText().toString());
+                survey.setStartDateSolar(startDateSolar.getText().toString());
+                survey.setEquipOnSiteSolar(equipOnSiteSolar.getText().toString());
+                survey.setInstallSolarCompleted(installSolarCompleted.getText().toString());
+                survey.setInstallVsatComplete(installVsatComplete.getText().toString());
+                survey.setInstallBtsComplete(installBtsComplete.getText().toString());
+                survey.setInstallWifiComplete(installWifiComplete.getText().toString());
+                survey.setPersonnelDepCommisioning(personnelDepCommisioning.getText().toString());
+                survey.setPersonnelArvCommisioning(personnelArvCommisioning.getText().toString());
+                survey.setStartDateCommisioning(startDateCommisioning.getText().toString());
+                survey.setCommisioningSolar(commisioningSolar.getText().toString());
+                survey.setCommisioningVsat(CommisioningVsat.getText().toString());
+                survey.setCommisioningBts(commisioningBts.getText().toString());
+                survey.setCommisioningWifi(commisioningWifi.getText().toString());
+                survey.setPersonnelDepAcceptance(personnelDepAcceptance.getText().toString());
+                survey.setPersonnelArvAcceptance(personnelArvAcceptance.getText().toString());
+                survey.setStartDateAcceptance(startDateAcceptance.getText().toString());
+                survey.setAcceptanceFencing(acceptanceFencing.getText().toString());
+                survey.setGeo(geo.getText().toString());
+                survey.setAcceptancePylon(acceptancePylon.getText().toString());
+                survey.setAcceptanceSolar(acceptanceSolar.getText().toString());
+                survey.setAcceptanceVsat(acceptanceVsat.getText().toString());
+                survey.setAcceptance3G(acceptance3G.getText().toString());
+                survey.setAcceptanceWifi(acceptanceWifi.getText().toString());
+                survey.setUpdated(1);
+
+
+                ((MainActivity)getActivity()).getSurveyDatabase().daoAccess ().insertOnlySingleSurvey (survey);
+
+            }
+        }) .start();
+
+
+
+    }
 
 //    public void sendSurveyToServer(Survey survey){
 //

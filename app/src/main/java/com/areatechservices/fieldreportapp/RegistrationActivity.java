@@ -140,8 +140,9 @@ public class RegistrationActivity extends AppCompatActivity {
                                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user,userJson.getString("token"));
 
                                 //starting the profile activity
-                                finish();
+
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
                             } else {
                                 Toast.makeText(getApplicationContext(), "error registration", Toast.LENGTH_SHORT).show();
                             }

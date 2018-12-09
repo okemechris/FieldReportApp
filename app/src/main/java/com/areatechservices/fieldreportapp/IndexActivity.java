@@ -16,12 +16,6 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_index);
 
 
-        //if the user is already logged in we will directly start the profile activity
-        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
-            finish();
-            startActivity(new Intent(this, MainActivity.class));
-            return;
-        }
 
         loginButton = findViewById(R.id.signinBtn);
         createButton = findViewById(R.id.registerBtn);
@@ -51,5 +45,17 @@ public class IndexActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if the user is already logged in we will directly start the profile activity
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+
     }
 }

@@ -112,8 +112,9 @@ public class SigninActivity extends AppCompatActivity {
                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user,userJson.getString("token"));
 
                                 //starting the profile activity
-                                finish();
+
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
                             } else {
                                 Toast.makeText(getApplicationContext(), "error login", Toast.LENGTH_SHORT).show();
                             }

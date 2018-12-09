@@ -9,6 +9,6 @@ public class ApiUrls {
     public static final String BASE_URL = "http://survey.topjoymultiglobal.com/";
     public static final String URL_REGISTER = BASE_URL + "api/register";
     public static final String URL_LOGIN= BASE_URL+ "api/login";
-    public static final String URL_UPDATE_SURVEY= BASE_URL+ "api/survey";
+    public static final String URL_UPDATE_SURVEY= BASE_URL+ "api/report";
     public static final String URL_ADD_NEW_SURVEY= BASE_URL+ "api/report";
 }

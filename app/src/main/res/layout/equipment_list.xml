@@ -38,6 +38,14 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,6 +68,13 @@
 
 
         </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
 
         <LinearLayout
@@ -83,6 +98,13 @@
 
 
         </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -105,6 +127,13 @@
 
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
 
     <LinearLayout
@@ -128,7 +157,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
 
     <LinearLayout
@@ -150,6 +185,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -170,6 +212,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -192,6 +241,13 @@
             android:paddingEnd="2dp"/>
     </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -214,6 +270,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -234,6 +297,14 @@
             android:inputType="date"
             android:paddingEnd="2dp"/>
     </LinearLayout>
+
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -257,6 +328,13 @@
 
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -278,6 +356,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -299,6 +384,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -317,6 +409,14 @@
             android:inputType="date"
             android:paddingEnd="2dp"/>
     </LinearLayout>
+
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -339,6 +439,14 @@
 
        </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -360,6 +468,13 @@
 
          </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -380,6 +495,13 @@
             android:paddingEnd="2dp"/>
        </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -403,6 +525,14 @@
 
       </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -424,7 +554,13 @@
 
 
     </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
         <LinearLayout
         android:orientation="horizontal"
@@ -446,7 +582,13 @@
                 android:paddingEnd="2dp"/>
        </LinearLayout>
 
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -468,7 +610,13 @@
 
 
         </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -490,6 +638,13 @@
             android:paddingEnd="2dp"/>
          </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -513,6 +668,14 @@
 
          </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -533,7 +696,13 @@
             android:paddingEnd="2dp"/>
 
         </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -555,7 +724,13 @@
             android:paddingEnd="2dp"/>
 
         </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -577,6 +752,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -600,6 +782,13 @@
 
 
        </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -623,6 +812,13 @@
 
     </LinearLayout>
 
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -645,6 +841,13 @@
             android:paddingEnd="2dp"/>
 
      </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -666,6 +869,13 @@
             android:paddingEnd="2dp"/>
 
          </LinearLayout>
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -687,7 +897,13 @@
             android:paddingEnd="2dp"/>
 
        </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -709,7 +925,13 @@
 
         </LinearLayout>
 
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -729,7 +951,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -750,7 +978,13 @@
             android:inputType="date"
             android:paddingEnd="2dp"/>
     </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -772,7 +1006,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -796,7 +1036,13 @@
 
         </LinearLayout>
 
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -818,7 +1064,13 @@
             android:paddingEnd="2dp"/>
 
           </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -839,7 +1091,13 @@
             android:paddingEnd="2dp"/>
 
          </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -862,7 +1120,13 @@
 
          </LinearLayout>
 
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -884,7 +1148,13 @@
             android:paddingEnd="2dp"/>
 
         </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -907,7 +1177,13 @@
             android:paddingEnd="2dp"/>
 
         </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -928,7 +1204,13 @@
             android:paddingEnd="2dp"/>
 
        </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -950,7 +1232,13 @@
             android:paddingEnd="2dp"/>
 
     </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -970,7 +1258,13 @@
             android:inputType="date"
             android:paddingEnd="2dp"/>
        </LinearLayout>
-
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="#90909090"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
