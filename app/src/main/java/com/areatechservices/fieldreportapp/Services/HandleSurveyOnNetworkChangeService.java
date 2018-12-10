@@ -207,7 +207,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
                 Map<String, String> params = new HashMap<>();
                 params.put("location", survey.getGeo());
                 params.put("user_id","");
-                params.put("survey",survey.getId().toString());
+                params.put("survey_id",survey.getId().toString());
                 params.put("sd", survey.getStartDate());
                 params.put("sc", survey.getSurveyCompleted());
                 params.put("epsc", survey.getEquipPickupSuplierCivilWorks());

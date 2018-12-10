@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragmentContainer, frag);
             transaction.commit();
 
-        } 
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
