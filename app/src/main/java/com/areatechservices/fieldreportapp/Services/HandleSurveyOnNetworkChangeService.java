@@ -1,9 +1,13 @@
 package com.areatechservices.fieldreportapp.Services;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -27,6 +31,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -43,24 +48,36 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 
     public  User loggedinUser;
     SurveyDatabase db;
+    ConnectivityChangeReciever connectivityReceiver;
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Bundle extras = intent.getExtras();
-        boolean isNetworkConnected = extras.getBoolean("isNetworkConnected");
-        db = new RoomDatabase(getApplicationContext()).getSurveyDatabase();
-        loggedinUser = SharedPrefManager.getInstance(getApplicationContext()).getUser(getApplicationContext());
 
 
 
-        sendSurveyToServer(isNetworkConnected);
+//        boolean isNetworkConnected = extras.getBoolean("isNetworkConnected");
+//        db = new RoomDatabase(getApplicationContext()).getSurveyDatabase();
+//        loggedinUser = SharedPrefManager.getInstance(getApplicationContext()).getUser(getApplicationContext());
+
+
 //        startUserToServer(isNetworkConnected,getApplicationContext());
 //        sendNewSurveyToServer(isNetworkConnected,getApplicationContext());
         // your code
     }
 
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        //doTimer();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        connectivityReceiver = new ConnectivityChangeReciever();
+        registerReceiver(connectivityReceiver,intentFilter);
 
-//    public void sendUpdatedSurveyToServer(boolean connected){
+        return Service.START_STICKY;
+
+    }
+
+    //    public void sendUpdatedSurveyToServer(boolean connected){
 //
 //        if(connected){
 //
@@ -87,33 +104,32 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 //
 //
 //    }
+//
+//    void doTimer(){
+//
+//        final Handler handler = new Handler();
+//        final int delay = 6000; //milliseconds
+//
+//        handler.postDelayed(new Runnable(){
+//            public void run(){
+//                //do something
+//                if(connectivityReceiver.isConnected(getApplicationContext())){
+//                    System.out.println("dkdkdkdkdk");
+//                }
+//
+//                handler.postDelayed(this, delay);
+//            }
+//        }, delay);
+//    }
 
-    public void sendSurveyToServer(boolean connected){
-
-        if(connected){
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    List<Survey> surveyList = db.daoAccess ().getUpdatedSurvey (1);
-                    for(Survey survey : surveyList){
-
-                        sendSurveyToServer(survey);
-
-                    }
-
-                }
-
-            }).start();
-
-
-
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(connectivityReceiver);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
         }
-
-
     }
 
 
@@ -147,121 +163,7 @@ public class HandleSurveyOnNetworkChangeService extends IntentService {
 //    }
 
 
-    public void sendSurveyToServer(final Survey survey){
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_ADD_NEW_SURVEY,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println("response is "+response);
-                        try {
-                            //converting response to json object
-                            JSONObject obj = new JSONObject(response);
-
-                            //if no error in response
-                            if (!obj.has("error")) {
-                              /*
-                              /*if no error do something
-                              */
-                                survey.setUpdated(0);
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        db.daoAccess().updateSurvey(survey);
-                                    }}).start();
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-//                        error.printStackTrace();
-                        System.out.println("error new on response"+error.getMessage());
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-
-            //This is for Headers If You Needed
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                params.put("Accept", "application/json");
-                String auth = "Bearer "+ SharedPrefManager.getInstance(getApplicationContext()).getUserToken();
-                params.put("Authorization", auth);
-                //params.put("Token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-//                System.out.println("token is"+ SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-                return params;
-            }
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //params
-                Map<String, String> params = new HashMap<>();
-                params.put("location", survey.getGeo());
-                params.put("user_id","");
-                params.put("survey_id",survey.getId().toString());
-                params.put("sd", survey.getStartDate());
-                params.put("sc", survey.getSurveyCompleted());
-                params.put("epsc", survey.getEquipPickupSuplierCivilWorks());
-                params.put("pdc", survey.getPersonelDptCivilWorks());
-                params.put("pdis", survey.getPersonnelDepSolar());
-                params.put("pac", survey.getPersonelArvCivilWorks());
-                params.put("startec", survey.getStartDateCivilWorks());
-                params.put("eosc", survey.getEquipOnSiteCivilWorks());
-                params.put("aec", survey.getAllExcavationCompleted());
-                params.put("fcwc", survey.getFencingCivilCompleted());
-                params.put("pcwc", survey.getPylonCivilCompleted());
-                params.put("epsf", survey.getEquipPickupSuplierFencingPylon());
-                params.put("pdf", survey.getPersonelDptFencing());
-                params.put("paf", survey.getPersonelArvFencing());
-                params.put("startf", survey.getStartDateFencing());
-                params.put("eoss", survey.getEquipOnSiteSolar());
-                params.put("ipc", survey.getInstallPylonComplete());
-                params.put("eosf", survey.getEquipOnSiteFencing());
-                params.put("ifc", survey.getInstallFencingComplete());
-                params.put("cwsbc", survey.getCivilSolarComplete());
-                params.put("epws", survey.getEquipPickupWarehouseSolar());
-                params.put("pais", survey.getPersonnelArvSolar());
-                params.put("starti", survey.getStartDateSolar());
-                params.put("isc", survey.getInstallSolarCompleted());
-                params.put("ibc", survey.getInstallBtsComplete());
-                params.put("ivc", survey.getInstallVsatComplete());
-                params.put("iwc", survey.getInstallWifiComplete());
-                params.put("pcom", survey.getPersonnelDepCommisioning());
-                params.put("pacom", survey.getPersonnelArvCommisioning());
-                params.put("startcom", survey.getStartDateCommisioning());
-                params.put("coms", survey.getCommisioningSolar());
-                params.put("starta", survey.getStartDateAcceptance());
-                params.put("af", survey.getAcceptanceFencing());
-                params.put("ap", survey.getAcceptancePylon());
-                params.put("as", survey.getAcceptanceSolar());
-                params.put("av", survey.getAcceptanceVsat());
-                params.put("a3g", survey.getAcceptance3G());
-                params.put("awifi", survey.getAcceptanceWifi());
-                params.put("cwvc", survey.getCivilVsatComplete());
-                params.put("cv", survey.getCommisioningVsat());
-                params.put("cb", survey.getCommisioningBts());
-                params.put("cw", survey.getCommisioningWifi());
-                params.put("pda", survey.getPersonnelDepAcceptance());
-                params.put("paa", survey.getPersonnelArvAcceptance());
-
-
-                return params;
-            }
-
-
-        };
-
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-    }
 
 
 //    public void sendSurveyToServer(final Survey survey){
