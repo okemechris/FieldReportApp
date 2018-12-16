@@ -1,13 +1,16 @@
 package com.areatechservices.fieldreportapp.Models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import com.areatechservices.fieldreportapp.Converters.DateConverter;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by djbabs on 12/2/18.
@@ -75,6 +78,18 @@ public class Survey {
     private String acceptanceVsat;
     private String acceptance3G;
     private String acceptanceWifi;
+
+
+    public List<SurveyImages> getSurveyImages() {
+        return surveyImages;
+    }
+
+    public void setSurveyImages(List<SurveyImages> surveyImages) {
+        this.surveyImages = surveyImages;
+    }
+
+    @Ignore
+    public List<SurveyImages> surveyImages;
 
     @NonNull
     public Long getId() {
@@ -453,4 +468,9 @@ public class Survey {
         this.status = status;
     }
 
+
+    public boolean isEmpty() {
+        return (startDate.isEmpty()&&surveyCompleted.isEmpty()&&equipPickupSuplierCivilWorks.isEmpty()&&personelDptCivilWorks.isEmpty()&&personelArvCivilWorks.isEmpty());
+
+    }
 }

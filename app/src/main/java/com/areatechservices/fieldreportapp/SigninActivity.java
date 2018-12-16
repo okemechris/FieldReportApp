@@ -93,7 +93,6 @@ public class SigninActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         dialog.dismiss();
-                        System.out.println("error on response");
                         try {
                             //converting response to json object
                             JSONObject obj = new JSONObject(response);
@@ -104,12 +103,13 @@ public class SigninActivity extends AppCompatActivity {
                                 JSONObject userJson = obj.getJSONObject("success");
 
                                 //creating a new user object
-                                UserDomain user = new UserDomain(
-                                        userJson.getString("name")
-                                );
-
+//                                UserDomain user = new UserDomain(
+//                                        userJson.getString("name")
+//                                );
+//
+//                                System.out.println("sssssssssssss======"+response);
                                //storing the user in shared preferences
-                               SharedPrefManager.getInstance(getApplicationContext()).userLogin(user,userJson.getString("token"));
+                               SharedPrefManager.getInstance(getApplicationContext()).userLogin(userJson.getString("token"));
 
                                 //starting the profile activity
 
@@ -126,14 +126,12 @@ public class SigninActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        dialog.dismiss();
-                        System.out.println("error on response");
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();;
+                        Toast.makeText(getApplicationContext(), "A network error was encountered", Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                System.out.println("auth error==========");
                 Map<String, String> params = new HashMap<>();
                 params.put("email", email);
                 params.put("password", password);

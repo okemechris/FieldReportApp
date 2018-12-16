@@ -4,6 +4,15 @@
     android:layout_marginTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoShadowHeight="4dp">
 <ScrollView
 
     android:orientation="vertical"
@@ -1290,21 +1299,13 @@
 
 </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonHolder"
-        android:layout_alignParentBottom="true">
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="save"
-            android:id="@+id/save"
-            />
+        <include
+            layout="@layout/image_upload_slideup_layout">
+        </include>
 
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
-    </LinearLayout>
 
 </RelativeLayout>

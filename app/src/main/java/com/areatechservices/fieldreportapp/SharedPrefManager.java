@@ -39,30 +39,30 @@ public class SharedPrefManager {
 
     //method to let the user login
     //this method will store the user data in shared preferences
-    public void userLogin(UserDomain user,String token) {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+    public void userLogin(String token) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putString(KEY_NAME, user.getName());
+        //editor.putString(KEY_NAME, user.getName());
         editor.putString(USER_TOKEN, token);
         editor.apply();
     }
 
     //this method will checker whether user is already logged in or not
     public boolean isLoggedIn() {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_NAME, null) != null;
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(USER_TOKEN, null) != null;
     }
 
     //this method will give the logged in user
-    public User getUser(Context context) {
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return new RoomDatabase(context).getSurveyDatabase().daoAccess().getUserByEmail(sharedPreferences.getString(KEY_EMAIL, ""));
-
-    }
+//    public User getUser(Context context) {
+//        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+//        return new RoomDatabase(context).getSurveyDatabase().daoAccess().getUserByEmail(sharedPreferences.getString(KEY_EMAIL, ""));
+//
+//    }
 
     public String getUserToken(){
-        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE);
         return sharedPreferences.getString(USER_TOKEN, "");
     }
 

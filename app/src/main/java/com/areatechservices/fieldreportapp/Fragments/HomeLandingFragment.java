@@ -69,23 +69,29 @@ public class HomeLandingFragment extends Fragment {
 
 
     public void startUncompletedThread(){
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
 
                 uncompletedSurveyArrayList = getUncompletedSurvey();
                 uncompletedAdapter = new UncompletedSurveyAdapter(getActivity().getApplicationContext(),uncompletedSurveyArrayList);
-                uncompletedSurveyList.setAdapter(uncompletedAdapter);
 //                uncompletedAdapter.notifyDataSetChanged();
 
                 completedSurveyArrayList = getCompletedSurvey();
                 completedAdapter = new CompletedSurveyAdapter(getActivity().getApplicationContext(),completedSurveyArrayList);
-                completedSurveyList.setAdapter(completedAdapter);
 //                uncompletedAdapter.notifyDataSetChanged();
 
 
             }
-        }) .start();
+        });
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        uncompletedSurveyList.setAdapter(uncompletedAdapter);
+        completedSurveyList.setAdapter(completedAdapter);
 
     }
 

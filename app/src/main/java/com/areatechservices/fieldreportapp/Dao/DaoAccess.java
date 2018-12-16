@@ -3,10 +3,12 @@ package com.areatechservices.fieldreportapp.Dao;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.areatechservices.fieldreportapp.Models.Survey;
+import com.areatechservices.fieldreportapp.Models.SurveyImages;
 import com.areatechservices.fieldreportapp.Models.User;
 
 import java.util.ArrayList;
@@ -20,13 +22,15 @@ import java.util.List;
 public interface DaoAccess {
 
     @Insert
-    void insertOnlySingleSurvey(Survey survey);
+    public abstract long insertOnlySingleSurvey(Survey survey);
     @Insert
     void insertMultipleSurvey(List<Survey> surveyList);
     @Query("SELECT * FROM Survey WHERE id = :id")
     Survey findSurveyById(Long id);
     @Update
     void updateSurvey (Survey survey);
+    @Update
+    void updateImage (SurveyImages survey);
     @Delete
     void deleteSurvey (Survey survey);
 
@@ -36,23 +40,19 @@ public interface DaoAccess {
     @Query("SELECT * FROM Survey ")
     List<Survey> getAllSurvey();
 
+    @Query("SELECT * FROM SurveyImages ")
+    List<SurveyImages> getAllimages();
+
      @Query("SELECT * FROM Survey WHERE updated = :updated")
     List<Survey> getUpdatedSurvey(int updated);
 
-    @Query("SELECT * FROM User WHERE status = :status")
-    List<User> getUnregisteredUser(int status);
 
-    @Insert
-    void insertUser(User user);
-
-    @Query("SELECT * FROM User WHERE id = :id")
-    User getUser(Long id);
-
-    @Query("SELECT * FROM User WHERE email = :email")
-    User getUserByEmail(String email);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insertImageList(List<SurveyImages> images);
 
 
-    @Update
-    void updateUser(User user);
+    @Query("SELECT * FROM SurveyImages WHERE surveyId =:surveyId")
+    public abstract List<SurveyImages> getSurveyImages(Long surveyId);
+
 
 }

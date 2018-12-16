@@ -132,12 +132,12 @@ public class RegistrationActivity extends AppCompatActivity {
                                 JSONObject userJson = obj.getJSONObject("success");
 
                                 //creating a new user object
-                                UserDomain user = new UserDomain(
-                                        userJson.getString("name")
-                                );
+//                                UserDomain user = new UserDomain(
+//                                        userJson.getString("name")
+//                                );
 
                                 //storing the user in shared preferences
-                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user,userJson.getString("token"));
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(userJson.getString("token"));
 
                                 //starting the profile activity
 
