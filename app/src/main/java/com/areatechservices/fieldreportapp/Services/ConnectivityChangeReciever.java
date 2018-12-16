@@ -134,7 +134,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
                                 }).start();
 
                             } else {
-                                Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -146,8 +146,8 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
 //                        error.printStackTrace();
-                        System.out.println("error new on response" + error.getMessage());
-                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        //System.out.println("error new on response" + error.getMessage());
+                        //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
 
@@ -240,7 +240,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Bitmap b = BitmapFactory.decodeStream(new FileInputStream(file));
-        System.out.println("jjdjdjdj ======="+ b.getByteCount());
+        //System.out.println("jjdjdjdj ======="+ b.getByteCount());
         b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         doUpload(image,byteArray);
@@ -255,7 +255,7 @@ public void doUpload(final SurveyImages image, final byte[] bitmap) {
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    System.out.println("response is " + response);
+                    //System.out.println("response is " + response);
                     try {
                         //converting response to json object
                         JSONObject obj = new JSONObject(response);
@@ -281,7 +281,7 @@ public void doUpload(final SurveyImages image, final byte[] bitmap) {
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
 //                        error.printStackTrace();
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }) {
 
