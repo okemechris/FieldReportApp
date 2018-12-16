@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.areatechservices.fieldreportapp.Domain.ImageDomain;
 import com.areatechservices.fieldreportapp.ImageAdapter;
@@ -79,6 +80,8 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
             viewPager.setOffscreenPageLimit(8);
 
 
+            TextView heading = view.findViewById(R.id.heading);
+            heading.setText("Update Report");
             imageArrayList = new ArrayList<>();
             imageAdapter = new ImageAdapter(getContext(),imageArrayList);
 
@@ -86,7 +89,7 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
             GridView grid = view.findViewById(R.id.thumbnailGrid);
             grid.setAdapter(imageAdapter);
 
-            
+
 
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
