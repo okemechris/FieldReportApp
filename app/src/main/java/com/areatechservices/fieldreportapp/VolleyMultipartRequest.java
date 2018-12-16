@@ -1,4 +1,5 @@
 package com.areatechservices.fieldreportapp;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -20,7 +21,7 @@ import java.util.Map;
  * Sketch Project Studio
  * Created by Angga on 27/04/2016 12.05.
  */
-public class VolleyMultipart extends Request<NetworkResponse> {
+public class VolleyMultipartRequest extends Request<NetworkResponse> {
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
@@ -37,7 +38,7 @@ public class VolleyMultipart extends Request<NetworkResponse> {
      * @param listener      on success achieved 200 code from request
      * @param errorListener on error http or library timeout
      */
-    public VolleyMultipart(String url, Map<String, String> headers,
+    public VolleyMultipartRequest(String url, Map<String, String> headers,
                                   Response.Listener<NetworkResponse> listener,
                                   Response.ErrorListener errorListener) {
         super(Method.POST, url, errorListener);
@@ -54,7 +55,7 @@ public class VolleyMultipart extends Request<NetworkResponse> {
      * @param listener      on success event handler
      * @param errorListener on error event handler
      */
-    public VolleyMultipart(int method, String url,
+    public VolleyMultipartRequest(int method, String url,
                                   Response.Listener<NetworkResponse> listener,
                                   Response.ErrorListener errorListener) {
         super(method, url, errorListener);

@@ -9,23 +9,27 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.areatechservices.fieldreportapp.ApiUrls;
+import com.areatechservices.fieldreportapp.Constant;
 import com.areatechservices.fieldreportapp.Models.Survey;
 import com.areatechservices.fieldreportapp.Models.SurveyImages;
 import com.areatechservices.fieldreportapp.RoomDatabase;
 import com.areatechservices.fieldreportapp.SharedPrefManager;
 import com.areatechservices.fieldreportapp.SurveyDatabase;
-import com.areatechservices.fieldreportapp.VolleyMultipart;
+import com.areatechservices.fieldreportapp.VolleyMultipartRequest;
 import com.areatechservices.fieldreportapp.VolleySingleton;
 
 import org.json.JSONException;
@@ -43,6 +47,8 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
     Context context;
     SurveyDatabase db;
+    Boolean doingImageUpload = false;
+    Boolean doingSurveyUpload = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -75,22 +81,26 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
                 List<Survey> surveyList = db.daoAccess().getUpdatedSurvey(1);
                 for (Survey survey : surveyList) {
+                    if(!doingSurveyUpload){
 
-                    Survey s = getSurveyWithImagesByStatus(survey.getId());
-                    ;
-                    sendSurveyToServer(s);
-                    for (SurveyImages i : s.getSurveyImages()) {
-
-                        if(i.getUploaded() == 0){
-                            try {
-                                doImageUpload(i);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
+                        sendSurveyToServer(survey);
+                        doingSurveyUpload = true;
                     }
 
+
+                   }
+
+                for(SurveyImages i :getImagesNotSent()){
+
+                    if(!doingImageUpload){
+
+                        try {
+                            doImageUpload(i);
+                            doingImageUpload = true;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                 }
 
@@ -103,11 +113,16 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
     public Survey getSurveyWithImagesByStatus(Long id) {
         Survey survey = db.daoAccess().findSurveyById(id);
-        List<SurveyImages> images = db.daoAccess().getSurveyImages(id);
-        survey.setSurveyImages(images);
         return survey;
     }
 
+    public List<SurveyImages> getImagesNotSent(){
+
+        List<SurveyImages> images = db.daoAccess().getSurveyImagesNotUploaded(Constant.SURVEYNOTUPLOADED);
+
+        return images;
+
+    }
 
     public void sendSurveyToServer(final Survey survey) {
 
@@ -124,7 +139,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
                             if (!obj.has("error")) {
                               /*
                               /*if no error do something
-                              */
+                              */doingSurveyUpload = false;
                                 survey.setUpdated(0);
                                 new Thread(new Runnable() {
                                     @Override
@@ -144,6 +159,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        doingSurveyUpload = false;
                         error.printStackTrace();
 //                        error.printStackTrace();
                         //System.out.println("error new on response" + error.getMessage());
@@ -160,7 +176,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
                 String auth = "Bearer " + SharedPrefManager.getInstance(context).getUserToken();
                 params.put("Authorization", auth);
                 //params.put("Token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-//                System.out.println("token is"+ SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+               //System.out.println("token is"+ SharedPrefManager.getInstance(context).getUserToken());
                 return params;
             }
 
@@ -239,7 +255,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Bitmap b = BitmapFactory.decodeStream(new FileInputStream(file));
+        Bitmap b = decodeFile(file);
         //System.out.println("jjdjdjdj ======="+ b.getByteCount());
         b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
@@ -247,78 +263,203 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
     }
 
+    private Bitmap decodeFile(File f){
+        try {
+            //Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
 
-public void doUpload(final SurveyImages image, final byte[] bitmap) {
-    final String imageString = Base64.encodeToString(bitmap, Base64.DEFAULT);
+            //The new size we want to scale to
+            final int REQUIRED_SIZE=150;
 
-    StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_UPLOAD,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    //System.out.println("response is " + response);
+            //Find the correct scale value. It should be the power of 2.
+            int scale=1;
+            while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+                scale*=2;
+
+            //Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize=scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {
+
+        }
+
+        return null;
+    }
+
+//    public void doUpload(final SurveyImages image, final String bitmap) {
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_UPLOAD,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        //System.out.println("response is " + response);
+//                        try {
+//                            //converting response to json object
+//                            JSONObject obj = new JSONObject(response);
+//                            System.out.println("response is"+response);
+//                            //if no error in response
+//                            doingImageUpload = false;
+//                            image.setUploaded(1);
+//                            new Thread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    db.daoAccess().updateImage(image);
+//
+//                                }
+//                            }).start();
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        error.printStackTrace();
+//                        doingImageUpload = false;
+//    //                        error.printStackTrace();
+//                        //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }) {
+//
+//            //This is for Headers If You Needed
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("Content-Type", "multipart/form-data");
+//                params.put("Accept", "application/json");
+//                String auth = "Bearer " + SharedPrefManager.getInstance(context).getUserToken();
+//                params.put("Authorization", auth);
+//                //params.put("Token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+//    //                System.out.println("token is"+ SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+//                return params;
+//            }
+//
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                //System.out.println("sssssssss ======"+survey.getId().toString());
+//                Map<String, String> params = new HashMap<>();
+//                params.put("image", bitmap);
+//                params.put("description", image.getDescription());
+//                params.put("survey_id", image.getSurveyId().toString());
+//                params.put("title", "");
+//                return params;
+//            }
+//
+//
+//        };
+//        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+//                10000,
+//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//        VolleySingleton.getInstance(context).addToRequestQueue(stringRequest);
+//
+//    }
+
+
+    private void doUpload(final SurveyImages image, final byte[] bitmap) {
+        // loading or check internet connection or something...
+        // ... then
+        Map<String, String> params = new HashMap<String, String>();
+        String auth = "Bearer " + SharedPrefManager.getInstance(context).getUserToken();
+        params.put("Authorization", auth);
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(ApiUrls.URL_UPLOAD,params, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String resultResponse = new String(response.data);
+                try {
+                    JSONObject result = new JSONObject(resultResponse);
+//                    String status = result.getString("status");
+//                    String message = result.getString("message");
+
+                    doingImageUpload = false;
+                            image.setUploaded(1);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    db.daoAccess().updateImage(image);
+
+                                }
+                            }).start();
+//
+//                    if (status.equals(Constant.REQUEST_SUCCESS)) {
+//                        // tell everybody you have succed upload image and post strings
+//                        Log.i("Messsage", message);
+//                    } else {
+//                        Log.i("Unexpected", message);
+//                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    String result = new String(networkResponse.data);
                     try {
-                        //converting response to json object
-                        JSONObject obj = new JSONObject(response);
+                        JSONObject response = new JSONObject(result);
+                        String status = response.getString("status");
+                        String message = response.getString("message");
 
-                        //if no error in response
+                        Log.e("Error Status", status);
+                        Log.e("Error Message", message);
 
-                        image.setUploaded(1);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                db.daoAccess().updateImage(image);
-
-                            }
-                        }).start();
-
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message+" Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message+ " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message+" Something is getting wrong";
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-//                        error.printStackTrace();
-                    //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }) {
-
-        //This is for Headers If You Needed
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("Content-Type", "multipart/form-data");
-            params.put("Accept", "application/json");
-            String auth = "Bearer " + SharedPrefManager.getInstance(context).getUserToken();
-            params.put("Authorization", auth);
-            //params.put("Token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-//                System.out.println("token is"+ SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-            return params;
-        }
-
-        @Override
-        protected Map<String, String> getParams() throws AuthFailureError {
-            //System.out.println("sssssssss ======"+survey.getId().toString());
-            Map<String, String> params = new HashMap<>();
-            params.put("image", imageString);
-            params.put("description", image.getDescription());
-            params.put("survey_id", image.getSurveyId().toString());
-            params.put("title", "");
-            return params;
-        }
+                Log.i("Error", errorMessage);
+                error.printStackTrace();
+            }
+        }) {
 
 
-    };
-    stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-            10000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    VolleySingleton.getInstance(context).addToRequestQueue(stringRequest);
 
-}
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("description", image.getDescription());
+                params.put("survey_id", image.getSurveyId().toString());
+                params.put("title", "");
+                return params;
+            }
 
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                // for now just get bitmap data from ImageView
+                params.put("image", new DataPart(image.getImage(), bitmap, "image/jpeg"));
+               // params.put("cover", new DataPart("file_cover.jpg", AppHelper.getFileDataFromDrawable(getBaseContext(), mCoverImage.getDrawable()), "image/jpeg"));
+
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(context).addToRequestQueue(multipartRequest);
+    }
 
 }
 

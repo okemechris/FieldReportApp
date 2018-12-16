@@ -224,6 +224,7 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
                 SurveyImages i =new SurveyImages();
                 i.setDescription(imageDes.getText().toString());
                 i.setUri(uri.toString());
+                i.setUploaded(Constant.SURVEYNOTUPLOADED);
                 String name = getRealPathFromURI(uri);
                 i.setImage(name);
                 imageArrayList.add(i);

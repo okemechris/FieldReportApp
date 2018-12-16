@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.areatechservices.fieldreportapp.Constant;
 import com.areatechservices.fieldreportapp.Domain.ImageDomain;
 import com.areatechservices.fieldreportapp.ImageAdapter;
 import com.areatechservices.fieldreportapp.MainActivity;
@@ -184,6 +185,7 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
                 i.setUri(uri.toString());
                 String name = getRealPathFromURI(uri);
                 i.setImage(name);
+                i.setUploaded(Constant.SURVEYNOTUPLOADED);
                 imageArrayList.add(i);
                 imageAdapter.notifyDataSetChanged();
                 alertDialog.dismiss();

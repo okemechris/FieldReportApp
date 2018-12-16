@@ -24,6 +24,11 @@ public interface DaoAccess {
     @Insert
     public abstract long insertOnlySingleSurvey(Survey survey);
     @Insert
+    public abstract long insertSurveyImage(SurveyImages surveyImages);
+    @Insert
+    void insertMultipleSurveyImage(List<SurveyImages> surveyImages);
+
+    @Insert
     void insertMultipleSurvey(List<Survey> surveyList);
     @Query("SELECT * FROM Survey WHERE id = :id")
     Survey findSurveyById(Long id);
@@ -37,6 +42,9 @@ public interface DaoAccess {
     @Query("SELECT * FROM Survey WHERE status = :status")
     List<Survey> findSurveyByStatus(int status);
 
+    @Query("SELECT * FROM SurveyImages WHERE uploaded = :uploaded")
+    List<SurveyImages> getSurveyImagesNotUploaded(int uploaded);
+
     @Query("SELECT * FROM Survey ")
     List<Survey> getAllSurvey();
 
@@ -48,11 +56,11 @@ public interface DaoAccess {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertImageList(List<SurveyImages> images);
+    void insertImageList(List<SurveyImages> images);
 
 
     @Query("SELECT * FROM SurveyImages WHERE surveyId =:surveyId")
-    public abstract List<SurveyImages> getSurveyImages(Long surveyId);
+    List<SurveyImages> getSurveyImages(Long surveyId);
 
 
 }

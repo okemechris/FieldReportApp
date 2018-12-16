@@ -54,7 +54,10 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    for(SurveyImages i : getallImages()){
+                        System.out.println("hdhhd==============="+i.getUploaded()+"dddddd "+i.getSurveyId());
 
+                    }
                     uSurvey = getSurveyWithImages(survey);
                     System.out.println(uSurvey.getSurveyImages().size());
 
@@ -577,6 +580,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
             System.out.println("survey id ==="+id);
             images.get(i).setSurveyId(id);
         }
+
         ((MainActivity)activity).getSurveyDatabase().daoAccess ().insertImageList (images);
 
 
@@ -608,11 +612,11 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
         return survey;
     }
 
-    public int getallImages() {
+    public List<SurveyImages> getallImages() {
 
         List<SurveyImages> images = ((MainActivity)activity).getSurveyDatabase().daoAccess ().getAllimages();
 
-        return images.size();
+        return images;
     }
 
 
@@ -763,6 +767,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
                 if(survey.isEmpty()){
                     return;
                 }
+
                 insertSurveyWithImages(survey);
                 //((MainActivity)activity).getSurveyDatabase().daoAccess ().insertOnlySingleSurvey (survey);
 
