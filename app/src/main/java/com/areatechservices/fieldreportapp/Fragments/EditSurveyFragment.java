@@ -13,26 +13,27 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.areatechservices.fieldreportapp.Adapters.CommentListAdapter;
 import com.areatechservices.fieldreportapp.Constant;
-import com.areatechservices.fieldreportapp.Domain.ImageDomain;
-import com.areatechservices.fieldreportapp.ImageAdapter;
-import com.areatechservices.fieldreportapp.MainActivity;
+import com.areatechservices.fieldreportapp.Adapters.ImageAdapter;
 import com.areatechservices.fieldreportapp.Models.Survey;
+import com.areatechservices.fieldreportapp.Models.SurveyComent;
 import com.areatechservices.fieldreportapp.Models.SurveyImages;
 import com.areatechservices.fieldreportapp.R;
-import com.areatechservices.fieldreportapp.SurveyViewPagerAdapter;
+import com.areatechservices.fieldreportapp.Adapters.SurveyViewPagerAdapter;
 import com.areatechservices.fieldreportapp.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -44,14 +45,17 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
         ArrayList<SurveyImages> imageArrayList;
         ImageAdapter imageAdapter;
         ViewPager viewPager;
+        CommentListAdapter commentListAdapter;
+        ArrayList<SurveyComent> commentArrayList;
+
         FloatingActionButton save;
 
         public Long surveyId;
         Bundle bundle;
         Survey survey;
         SurveyViewPagerAdapter adapter;
-    private int GALLERY = 1, CAMERA = 2;
-    Util util;
+        private int GALLERY = 1, CAMERA = 2;
+        Util util;
 
         public EditSurveyFragment() {
             // Required empty public constructor
@@ -76,7 +80,7 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
             viewPager = view.findViewById(R.id.viewpager);
             bundle = this.getArguments();
             surveyId = bundle.getLong("surveyId");
-            adapter = new SurveyViewPagerAdapter(getActivity(),getActivity(),surveyId);
+            adapter = new SurveyViewPagerAdapter(getActivity(),getActivity(),surveyId,util);
             viewPager.setAdapter(adapter);
             viewPager.setOffscreenPageLimit(8);
 
@@ -85,7 +89,21 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
             heading.setText("Update Report");
             imageArrayList = new ArrayList<>();
             imageAdapter = new ImageAdapter(getContext(),imageArrayList);
+            commentArrayList = new ArrayList<>();
 
+            commentListAdapter = new CommentListAdapter(getContext(),commentArrayList);
+
+            ListView commentList = view.findViewById(R.id.commentList);
+            commentList.setAdapter(commentListAdapter);
+
+            commentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    SurveyComent c = (SurveyComent)adapterView.getItemAtPosition(i);
+                    showAddCommentPopup(c);
+                }
+            });
+            populateCommentsAndImages(surveyId);
 
             GridView grid = view.findViewById(R.id.thumbnailGrid);
             grid.setAdapter(imageAdapter);
@@ -95,17 +113,8 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    adapter.dosave(imageArrayList);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                util.saveImagesToFolder(imageArrayList);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
+                    adapter.dosave(imageArrayList,commentArrayList);
+
                 }
             });
 
@@ -117,6 +126,13 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
                 }
             });
 
+            Button commentButton = view.findViewById(R.id.addComment);
+            commentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showAddCommentPopup(null);
+                }
+            });
 
             return view;
 
@@ -129,6 +145,24 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
 //        return survey;
 //    }
 
+       void populateCommentsAndImages(final Long surveyId){
+           new Thread(new Runnable() {
+               @Override
+               public void run() {
+
+                   Survey survey = util.getSurveyWithImagesAndComments(surveyId);
+                   for(SurveyComent c :survey.surveyComents){
+                       commentArrayList.add(c);
+
+                   }
+                   for(SurveyImages c :survey.getSurveyImages()){
+                       imageArrayList.add(c);
+
+                   }
+                   commentListAdapter.notifyDataSetChanged();
+                   imageAdapter.notifyDataSetChanged();
+               }}).start();
+       }
 
 
 
@@ -155,6 +189,54 @@ public class EditSurveyFragment extends Fragment implements View.OnClickListener
             super.onDestroy();
 
         }
+
+    //pop up picture and properties
+    public void showAddCommentPopup(final SurveyComent sComment){
+
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.getActivity());
+// ...Irrelevant code for customizing the buttons and title
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_comment_popup_layout, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText risk = dialogView.findViewById(R.id.risk);
+        final EditText achievement = dialogView.findViewById(R.id.achievement);
+        final EditText activity = dialogView.findViewById(R.id.activity);
+        Button addButton = dialogView.findViewById(R.id.addComment);
+
+        if(sComment != null){
+            risk.setText(sComment.getRisk());
+            achievement.setText(sComment.getAchievement());
+            activity.setText(sComment.getActivity());
+        }
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sComment == null){
+                    SurveyComent comment = new SurveyComent();
+                    comment.setRisk(risk.getText().toString());
+                    comment.setAchievement(achievement.getText().toString());
+                    comment.setActivity(activity.getText().toString());
+                    comment.setStatus(1);
+                    commentArrayList.add(comment);
+                    commentListAdapter.notifyDataSetChanged();
+                }else{
+
+                    sComment.setRisk(risk.getText().toString());
+                    sComment.setAchievement(achievement.getText().toString());
+                    sComment.setActivity(activity.getText().toString());
+                    sComment.setStatus(1);
+                }
+
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
 
 
     public void showPopup(final Uri uri){

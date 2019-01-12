@@ -13,6 +13,14 @@
         android:textSize="15dp"
         android:layout_marginBottom="10dp"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -32,6 +40,7 @@
             android:paddingStart="2dp"
             android:id="@+id/equipOnSiteCivilWorks"
             android:inputType="date"
+            android:focusable="false"
             android:paddingEnd="2dp"/>
     </LinearLayout>
 
@@ -60,6 +69,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="2dp"
             android:id="@+id/allExcavationCompleted"
+            android:focusable="false"
             android:inputType="date"
             android:paddingEnd="2dp"/>
 
@@ -81,6 +91,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="2dp"
             android:id="@+id/fencingCivilCompleted"
+            android:focusable="false"
             android:inputType="date"
             android:paddingEnd="2dp"/>
     </LinearLayout>
@@ -111,12 +122,52 @@
             android:paddingStart="2dp"
             android:id="@+id/pylonCivilCompleted"
             android:inputType="date"
+            android:focusable="false"
             android:paddingEnd="2dp"/>
 
 
     </LinearLayout>
 
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#90909090"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
 
+
+
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="20dp">-->
+
+        <!--<TextView-->
+            <!--android:ems="12"-->
+            <!--android:text="Comment"-->
+            <!--android:id="@+id/comment"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:textColor="#000000"-->
+            <!--android:textStyle="bold"-->
+            <!--android:layout_height="wrap_content" />-->
+
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:minHeight="100dp"-->
+            <!--android:paddingStart="2dp"-->
+            <!--android:id="@+id/phase3Comment"-->
+            <!--android:layout_below="@+id/comment"-->
+            <!--android:paddingEnd="2dp"/>-->
+
+
+    <!--</RelativeLayout>-->
+
+
+</LinearLayout>
+    </ScrollView>
 
 
 

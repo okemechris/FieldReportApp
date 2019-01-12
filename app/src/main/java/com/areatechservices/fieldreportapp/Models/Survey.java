@@ -19,7 +19,7 @@ import java.util.List;
 public class Survey {
 
     @NonNull
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private Long id;
     private String geo;
 
@@ -90,6 +90,17 @@ public class Survey {
 
     @Ignore
     public List<SurveyImages> surveyImages;
+
+    public List<SurveyComent> getSurveyComents() {
+        return surveyComents;
+    }
+
+    public void setSurveyComents(List<SurveyComent> surveyComents) {
+        this.surveyComents = surveyComents;
+    }
+
+    @Ignore
+    public List<SurveyComent> surveyComents;
 
     @NonNull
     public Long getId() {

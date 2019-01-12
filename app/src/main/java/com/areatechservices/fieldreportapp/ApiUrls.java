@@ -11,4 +11,5 @@ public class ApiUrls {
     public static final String URL_LOGIN= BASE_URL+ "api/login";
     public static final String URL_UPLOAD= BASE_URL+ "api/upload";
     public static final String URL_ADD_NEW_SURVEY= BASE_URL+ "api/report";
+    public static final String URL_ADD_COMMENTS= BASE_URL+ "api/comment";
 }

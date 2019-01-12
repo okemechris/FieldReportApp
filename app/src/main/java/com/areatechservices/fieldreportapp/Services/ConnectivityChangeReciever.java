@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.areatechservices.fieldreportapp.ApiUrls;
 import com.areatechservices.fieldreportapp.Constant;
 import com.areatechservices.fieldreportapp.Models.Survey;
+import com.areatechservices.fieldreportapp.Models.SurveyComent;
 import com.areatechservices.fieldreportapp.Models.SurveyImages;
 import com.areatechservices.fieldreportapp.RoomDatabase;
 import com.areatechservices.fieldreportapp.SharedPrefManager;
@@ -49,7 +50,7 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
     SurveyDatabase db;
     Boolean doingImageUpload = false;
     Boolean doingSurveyUpload = false;
-
+    Boolean doingCommentUpload = false;
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -104,6 +105,14 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
                 }
 
+                for(SurveyComent s : getCommentsNotSent()){
+
+                    if(!doingCommentUpload){
+                            sendCommentToServer(s);
+                            doingCommentUpload = true;
+                    }
+                }
+
             }
 
         }).start();
@@ -111,10 +120,10 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
     }
 
-    public Survey getSurveyWithImagesByStatus(Long id) {
-        Survey survey = db.daoAccess().findSurveyById(id);
-        return survey;
-    }
+//    public Survey getSurveyWithImagesByStatus(Long id) {
+//        Survey survey = db.daoAccess().findSurveyById(id);
+//        return survey;
+//    }
 
     public List<SurveyImages> getImagesNotSent(){
 
@@ -122,6 +131,13 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
         return images;
 
+    }
+
+    public List<SurveyComent> getCommentsNotSent(){
+
+        List<SurveyComent> comments = db.daoAccess().findCommentByStatus(1);
+
+        return comments;
     }
 
     public void sendSurveyToServer(final Survey survey) {
@@ -289,77 +305,6 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
         return null;
     }
 
-//    public void doUpload(final SurveyImages image, final String bitmap) {
-//
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_UPLOAD,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        //System.out.println("response is " + response);
-//                        try {
-//                            //converting response to json object
-//                            JSONObject obj = new JSONObject(response);
-//                            System.out.println("response is"+response);
-//                            //if no error in response
-//                            doingImageUpload = false;
-//                            image.setUploaded(1);
-//                            new Thread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    db.daoAccess().updateImage(image);
-//
-//                                }
-//                            }).start();
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        error.printStackTrace();
-//                        doingImageUpload = false;
-//    //                        error.printStackTrace();
-//                        //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }) {
-//
-//            //This is for Headers If You Needed
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Content-Type", "multipart/form-data");
-//                params.put("Accept", "application/json");
-//                String auth = "Bearer " + SharedPrefManager.getInstance(context).getUserToken();
-//                params.put("Authorization", auth);
-//                //params.put("Token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-//    //                System.out.println("token is"+ SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
-//                return params;
-//            }
-//
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                //System.out.println("sssssssss ======"+survey.getId().toString());
-//                Map<String, String> params = new HashMap<>();
-//                params.put("image", bitmap);
-//                params.put("description", image.getDescription());
-//                params.put("survey_id", image.getSurveyId().toString());
-//                params.put("title", "");
-//                return params;
-//            }
-//
-//
-//        };
-//        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-//                10000,
-//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//        VolleySingleton.getInstance(context).addToRequestQueue(stringRequest);
-//
-//    }
-
 
     private void doUpload(final SurveyImages image, final byte[] bitmap) {
         // loading or check internet connection or something...
@@ -460,6 +405,86 @@ public class ConnectivityChangeReciever extends BroadcastReceiver {
 
         VolleySingleton.getInstance(context).addToRequestQueue(multipartRequest);
     }
+
+
+    public void sendCommentToServer(final SurveyComent comment) {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUrls.URL_ADD_COMMENTS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println("response is " + response);
+                        try {
+                            //converting response to json object
+                            JSONObject obj = new JSONObject(response);
+
+                            //if no error in response
+                            if (!obj.has("error")) {
+                              /*
+                              /*if no error do something
+                              */doingCommentUpload = false;
+                                comment.setStatus(0);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        db.daoAccess().updateComment(comment);
+                                    }
+                                }).start();
+
+                            } else {
+                                //Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        doingCommentUpload = false;
+                        error.printStackTrace();
+//                        error.printStackTrace();
+                        //System.out.println("error new on response" + error.getMessage());
+                        //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+
+            //This is for Headers If You Needed
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Accept", "application/json");
+                String auth = "Bearer " + SharedPrefManager.getInstance(context).getUserToken();
+                params.put("Authorization", auth);
+                //params.put("Token", SharedPrefManager.getInstance(getApplicationContext()).getUserToken());
+                //System.out.println("token is"+ SharedPrefManager.getInstance(context).getUserToken());
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //System.out.println("sssssssss ======"+survey.getId().toString());
+                Map<String, String> params = new HashMap<>();
+                params.put("survey_id", comment.getSurveyId().toString());
+                params.put("risk", comment.getRisk());
+                params.put("achievement", comment.getAchievement());
+                params.put("activity", comment.getActivity());
+
+
+                return params;
+            }
+
+
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(context).addToRequestQueue(stringRequest);
+    }
+
 
 }
 

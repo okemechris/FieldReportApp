@@ -1,22 +1,16 @@
 package com.areatechservices.fieldreportapp.Fragments;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,42 +19,18 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.areatechservices.fieldreportapp.ApiUrls;
+import com.areatechservices.fieldreportapp.Adapters.CommentListAdapter;
 import com.areatechservices.fieldreportapp.Constant;
-import com.areatechservices.fieldreportapp.Domain.ImageDomain;
-import com.areatechservices.fieldreportapp.ImageAdapter;
-import com.areatechservices.fieldreportapp.MainActivity;
-import com.areatechservices.fieldreportapp.Models.Survey;
+import com.areatechservices.fieldreportapp.Adapters.ImageAdapter;
+import com.areatechservices.fieldreportapp.Models.SurveyComent;
 import com.areatechservices.fieldreportapp.Models.SurveyImages;
 import com.areatechservices.fieldreportapp.R;
-import com.areatechservices.fieldreportapp.SurveyViewPagerAdapter;
+import com.areatechservices.fieldreportapp.Adapters.SurveyViewPagerAdapter;
 import com.areatechservices.fieldreportapp.Util;
-import com.areatechservices.fieldreportapp.VolleySingleton;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -70,9 +40,10 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
     ViewPager viewPager;
     FloatingActionButton save;
     ImageAdapter imageAdapter;
+    CommentListAdapter commentListAdapter;
     ArrayList<SurveyImages> imageArrayList;
+    ArrayList<SurveyComent> commentArrayList;
     Util util;
-
 
     private int GALLERY = 1, CAMERA = 2;
 
@@ -97,29 +68,26 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.create_survey_layout, container, false);
         save = view.findViewById(R.id.save);
         viewPager = view.findViewById(R.id.viewpager);
-        final SurveyViewPagerAdapter adapter = new SurveyViewPagerAdapter(this.getActivity(),this.getActivity(),null);
+        final SurveyViewPagerAdapter adapter = new SurveyViewPagerAdapter(this.getActivity(),this.getActivity(),null,util);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(8);
 
         imageArrayList = new ArrayList<>();
+        commentArrayList = new ArrayList<>();
+
         imageAdapter = new ImageAdapter(getContext(),imageArrayList);
+        commentListAdapter = new CommentListAdapter(getContext(),commentArrayList);
+
+        ListView commentList = view.findViewById(R.id.commentList);
+        commentList.setAdapter(commentListAdapter);
 
         GridView grid = view.findViewById(R.id.thumbnailGrid);
         grid.setAdapter(imageAdapter);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapter.dosave(imageArrayList);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            util.saveImagesToFolder(imageArrayList);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+                adapter.dosave(imageArrayList,commentArrayList);
+
             }
         });
 
@@ -128,6 +96,14 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                showPictureDialog();
+            }
+        });
+
+        Button commentButton = view.findViewById(R.id.addComment);
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               showAddCommentPopup();
             }
         });
 
@@ -198,6 +174,7 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    //pop up picture and properties
     public void showPopup(final Uri uri){
 
 
@@ -221,7 +198,7 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
         doSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SurveyImages i =new SurveyImages();
+                SurveyImages i = new SurveyImages();
                 i.setDescription(imageDes.getText().toString());
                 i.setUri(uri.toString());
                 i.setUploaded(Constant.SURVEYNOTUPLOADED);
@@ -257,6 +234,42 @@ public class SurveyFragment extends Fragment implements View.OnClickListener {
                 });
         pictureDialog.show();
     }
+
+
+    //pop up picture and properties
+    public void showAddCommentPopup(){
+
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.getActivity());
+// ...Irrelevant code for customizing the buttons and title
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_comment_popup_layout, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText risk = dialogView.findViewById(R.id.risk);
+        final EditText achievement = dialogView.findViewById(R.id.achievement);
+        final EditText activity = dialogView.findViewById(R.id.activity);
+        Button addButton = dialogView.findViewById(R.id.addComment);
+
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SurveyComent comment = new SurveyComent();
+                comment.setRisk(risk.getText().toString());
+                comment.setAchievement(achievement.getText().toString());
+                comment.setActivity(activity.getText().toString());
+                comment.setStatus(1);
+                commentArrayList.add(comment);
+                commentListAdapter.notifyDataSetChanged();
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
 
     public void choosePhotoFromGallary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,

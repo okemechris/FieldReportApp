@@ -12,10 +12,13 @@ import android.support.annotation.NonNull;
 @Entity
 public class SurveyImages {
     @NonNull
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     int id;
     String description;
     String image;
+    String Uri;
+    int uploaded;
+    public Long surveyId;
 
     public String getUri() {
         return Uri;
@@ -25,7 +28,7 @@ public class SurveyImages {
         Uri = uri;
     }
 
-    String Uri;
+
 
     public int getUploaded() {
         return uploaded;
@@ -35,7 +38,7 @@ public class SurveyImages {
         this.uploaded = uploaded;
     }
 
-    int uploaded;
+
 
     public Long getSurveyId() {
         return surveyId;
@@ -45,7 +48,7 @@ public class SurveyImages {
         this.surveyId = surveyId;
     }
 
-    public Long surveyId;
+
 
     public String getImage() {
         return image;

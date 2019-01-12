@@ -1,4 +1,4 @@
-package com.areatechservices.fieldreportapp;
+package com.areatechservices.fieldreportapp.Adapters;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,12 +14,18 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.areatechservices.fieldreportapp.Constant;
 import com.areatechservices.fieldreportapp.Domain.ImageDomain;
 import com.areatechservices.fieldreportapp.Fragments.DatePickerDialogFragment;
 import com.areatechservices.fieldreportapp.Fragments.HomeLandingFragment;
+import com.areatechservices.fieldreportapp.MainActivity;
 import com.areatechservices.fieldreportapp.Models.Survey;
+import com.areatechservices.fieldreportapp.Models.SurveyComent;
 import com.areatechservices.fieldreportapp.Models.SurveyImages;
+import com.areatechservices.fieldreportapp.R;
+import com.areatechservices.fieldreportapp.Util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,20 +52,21 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
             acceptanceVsat,acceptance3G,acceptanceWifi;
 
     DatePickerDialogFragment datePicker;
+    private Util util;
 
-    public SurveyViewPagerAdapter(Context context, final FragmentActivity activity, final Long survey) {
+    public SurveyViewPagerAdapter(Context context, final FragmentActivity activity, final Long survey, final Util util) {
 
 
         if(survey != null){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for(SurveyImages i : getallImages()){
-                        System.out.println("hdhhd==============="+i.getUploaded()+"dddddd "+i.getSurveyId());
+                    for(SurveyComent i : getallImages()){
+                        System.out.println("hdhhd==============="+"dddddd "+i.getSurveyId());
 
                     }
-                    uSurvey = getSurveyWithImages(survey);
-                    System.out.println(uSurvey.getSurveyImages().size());
+                    uSurvey = util.getSurveyWithImagesAndComments(survey);
+                    System.out.println(uSurvey.getSurveyComents().size());
 
                 }
             }).start();
@@ -67,6 +74,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
 
         mContext = context;
         this.activity = activity;
+        this.util = util;
         datePicker = new DatePickerDialogFragment();
 
     }
@@ -532,7 +540,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
         }
     }
 
-    public void dosave(final ArrayList<SurveyImages> images){
+    public void dosave(final ArrayList<SurveyImages> images, final ArrayList<SurveyComent>  comments){
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -545,12 +553,19 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
+                        try {
+
+                            util.saveImagesToFolder(images);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
                         if(uSurvey == null){
-                            doAdd(images);
+                            doAdd(images,comments);
 
                         }else{
-                            doUpdate(images);
+                            doUpdate(images,comments);
                         }
 
                         HomeLandingFragment home = new HomeLandingFragment();
@@ -571,8 +586,9 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
     }
 
 
-    public void insertSurveyWithImages(Survey survey) {
+    public void insertSurveyWithImagesAndComments(Survey survey) {
         List<SurveyImages> images = survey.getSurveyImages();
+        List<SurveyComent> comments = survey.getSurveyComents();
         long id = ((MainActivity)activity).getSurveyDatabase().daoAccess ().insertOnlySingleSurvey (survey);
         System.out.println("IMAGES ==="+images.size());
         for (int i = 0; i < images.size(); i++) {
@@ -580,47 +596,53 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
             System.out.println("survey id ==="+id);
             images.get(i).setSurveyId(id);
         }
+        for (int i = 0; i < comments.size(); i++) {
+
+            System.out.println("survey id ==="+id);
+            comments.get(i).setSurveyId(id);
+        }
 
         ((MainActivity)activity).getSurveyDatabase().daoAccess ().insertImageList (images);
+        ((MainActivity)activity).getSurveyDatabase().daoAccess ().insertCommentList (comments);
 
 
     }
 
 
 
-    public void updateSurveyWithImage(Survey survey) {
+    public void updateSurveyWithImageAndComment(Survey survey) {
         List<SurveyImages> images = survey.getSurveyImages();
+        List<SurveyComent> comments = survey.getSurveyComents();
 
-        System.out.println("IMAGES ==="+images.size());
+        System.out.println("comments ==="+comments.size());
         for (int i = 0; i < images.size(); i++) {
 
             images.get(i).setSurveyId(survey.getId());
         }
+
+        for (int i = 0; i < comments.size(); i++) {
+
+            comments.get(i).setSurveyId(survey.getId());
+        }
+
         ((MainActivity)activity).getSurveyDatabase().daoAccess ().insertImageList (images);
+        ((MainActivity)activity).getSurveyDatabase().daoAccess ().insertCommentList (comments);
 
         ((MainActivity)activity).getSurveyDatabase().daoAccess ().updateSurvey (survey);
 
     }
 
-    public Survey getSurveyWithImages(Long id) {
-        Survey survey = ((MainActivity)activity).getSurveyDatabase().daoAccess ().findSurveyById(id);
-        List<SurveyImages> images = ((MainActivity)activity).getSurveyDatabase().daoAccess ().getSurveyImages(survey.getId());
-        if(survey != null){
-            survey.setSurveyImages(images);
-        }
 
-        return survey;
-    }
 
-    public List<SurveyImages> getallImages() {
+    public List<SurveyComent> getallImages() {
 
-        List<SurveyImages> images = ((MainActivity)activity).getSurveyDatabase().daoAccess ().getAllimages();
+        List<SurveyComent> images = ((MainActivity)activity).getSurveyDatabase().daoAccess ().getAllComments();
 
         return images;
     }
 
 
-    void doAdd(final ArrayList<SurveyImages> images){
+    void doAdd(final ArrayList<SurveyImages> images, final ArrayList<SurveyComent>  comments){
 
 
         new Thread(new Runnable() {
@@ -631,6 +653,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
                 survey.setGeo(geo.getText().toString());
                 survey.setStatus(Constant.SURVEYCREATED);
                 survey.setSurveyImages(images);
+                survey.setSurveyComents(comments);
                 if(startDate !=null)
 
                     survey.setStartDate(startDate.getText().toString());
@@ -768,7 +791,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
                     return;
                 }
 
-                insertSurveyWithImages(survey);
+                insertSurveyWithImagesAndComments(survey);
                 //((MainActivity)activity).getSurveyDatabase().daoAccess ().insertOnlySingleSurvey (survey);
 
             }
@@ -778,7 +801,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
 
     }
 
-    void doUpdate(final ArrayList<SurveyImages> images){
+    void doUpdate(final ArrayList<SurveyImages> images, final ArrayList<SurveyComent>  comments){
 
 
         new Thread(new Runnable() {
@@ -788,6 +811,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
                     uSurvey.setGeo(geo.getText().toString());
                 uSurvey.setStatus(Constant.SURVEYCREATED);
                 uSurvey.setSurveyImages(images);
+                uSurvey.setSurveyComents(comments);
                 if(startDate !=null)
 
                     uSurvey.setStartDate(startDate.getText().toString());
@@ -922,7 +946,7 @@ public class SurveyViewPagerAdapter extends PagerAdapter implements View.OnClick
                 uSurvey.setUpdated(1);
 
 
-                updateSurveyWithImage(uSurvey);
+                updateSurveyWithImageAndComment(uSurvey);
 
             }
         }) .start();
